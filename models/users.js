@@ -25,6 +25,9 @@ const updatedUser = async (firstname, lastname, age, gender, email, role, passwo
 
 const deleteUser = async (userid) => {
     await pool.query(`DELETE FROM users WHERE userid = ?`, [userid]);
+
+
+
     return getUsers();
 };
 
@@ -32,6 +35,4 @@ const checkuser = async (email)=>{
     const [[{password}]] = await pool.query(`SELECT * FROM users WHERE email =?`,[email])
     return password
 }
-
-
 export{getUsers,getUser,createUser,updatedUser,deleteUser,checkuser}
