@@ -26,7 +26,7 @@ export default{
             const {productname,amount,models,producturl}=req.body;
             await createProduct(productname, amount, models, producturl);
             res.send(await getProducts())
-            res.json({ 
+            res.send({ 
                 msg: 'Product added successfully', products 
             });
         }catch (error){
@@ -58,7 +58,7 @@ export default{
             const productId = req.params.id;
             await deleteProduct(productId);
             const products = await getProducts();
-            res.json({ message: 'Product deleted successfully', products });
+            res.send({ msg: 'Product deleted successfully', products });
         } catch (err) {
             console.error('Error deleting product:', err);
             res.status(404).json({ error: 'Error deleting product' });
