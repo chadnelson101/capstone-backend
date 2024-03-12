@@ -26,6 +26,7 @@ export default{
             const {productname,amount,models,producturl}=req.body;
             await createProduct(productname, amount, models, producturl);
             res.send(await getProducts())
+            res.json({ message: 'Product added successfully', products });
         }catch (error){
             console.error('Error adding product', error);
             res.status(404).send("Error adding product");
