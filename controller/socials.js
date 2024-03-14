@@ -34,7 +34,7 @@ export default {
             res.status(404).json({ error: 'Error deleting post' });
         }
     },
-    updateProduct: async (req, res) => {
+    updatePost: async (req, res) => {
         try {
             const [post] = await getPosts(+req.params.id);
             const { text, postimg } = req.body;
