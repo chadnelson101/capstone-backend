@@ -4,6 +4,7 @@ import cors from 'cors';
 import productsRouter from './routes/products.js';
 import usersRouter from './routes/users.js'
 import loginRouter from './routes/login.js'
+import socialsRouter from './routes/socials.js';
 import logInUser from './middlewear/auth.js'
 import cookieParser from 'cookie-parser';
 config();
@@ -19,6 +20,7 @@ app.use(cookieParser());
 app.use('/products',productsRouter);
 app.use('/users',usersRouter);
 app.use('/login',logInUser,loginRouter);
+app.use('/post',socialsRouter);
 
 
 app.listen(PORT, ()=>{

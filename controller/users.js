@@ -63,7 +63,8 @@ export default {
                 const userId = req.params.id;
                 await deleteUser(userId);
                 const users = await getUsers();
-                res.json({ message: 'user deleted successfully', users });
+                
+                res.send({ message: 'user deleted successfully', users });
             } catch (err) {
                 console.error('Error deleting user:', err);
                 res.status(404).json({ error: 'Error deleting user' });

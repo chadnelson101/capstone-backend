@@ -7,8 +7,7 @@ const loginUser = async (req, res, next) => {
         const { email, password } = req.body;
         console.log(email);
 
-        const hashedPassword = await checku
-        ser(email);
+        const hashedPassword = await checkuser(email);
         console.log(hashedPassword);
         bcrypt.compare(password, hashedPassword, (err, result) => {
             console.log(result);
