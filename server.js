@@ -7,6 +7,7 @@ import loginRouter from './routes/login.js'
 import socialsRouter from './routes/socials.js';
 import logInUser from './middlewear/auth.js'
 import cookieParser from 'cookie-parser';
+import {addToCart,getUserCart,updateCartItemQuantity,removeFromCart,getCart} from './models/cart.js'
 config();
 
 const PORT = process.env.PORT;
@@ -22,6 +23,48 @@ app.use('/users',usersRouter);
 app.use('/login',logInUser,loginRouter);
 app.use('/post',socialsRouter);
 
+app.get('/cart',async(req, res)=>{
+    try{
+        res.send(await getCart())
+    }catch (error){
+        console.error('Error fetching users', error);
+        res.status(500).send("Error fetching users");
+    }
+})
+
+app.get('/cart/:userId', async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        const cartItems = await getUserCart(userId);
+        res.status(200).json(cartItems);
+    } catch (error) {
+        console.error('Error fetching user cart:', error);
+        res.status(500).send('Error fetching user cart');
+    }
+});
+
+
+app.post('/cart', async (req, res) => {
+    const { userId, productId, quantity } = req.body;
+    try {
+        await addToCart(userId, productId, quantity);
+        res.status(201).json({ message: "Product added to cart successfully." });
+    } catch (error) {
+        console.error("Error adding product to cart:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+app.delete('/cart/:cartId', async (req, res) => {
+    const cartId = req.params.cartId;
+    try {
+        await removeFromCart(cartId);
+        const cart = await getCart();
+        res.send({ msg: 'Item deleted successfully from cart', cart });
+    } catch (error) {
+        console.error('Error deleting item from cart:', error);
+        res.status(500).send('Error deleting item from cart');
+    }
+});
 
 app.listen(PORT, ()=>{
     console.log(`http://localhost:`+PORT);
