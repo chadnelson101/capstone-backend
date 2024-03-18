@@ -8,6 +8,7 @@ import socialsRouter from './routes/socials.js';
 import logInUser from './middlewear/auth.js'
 import cookieParser from 'cookie-parser';
 import {addToCart,getUserCartWithProductInfo,updateCartItemQuantity,removeFromCart,getCartWithProductInfo} from './models/cart.js'
+import loginUser from './middlewear/auth.js';
 config();
 
 const PORT = process.env.PORT;
@@ -32,11 +33,11 @@ app.get('/cart',async(req, res)=>{
     }
 })
 
-app.get('/cart/:userId', async (req, res) => {
+app.get('/cart/:userId',loginUser, async (req, res) => {
     const userId = req.params.userId;
     try {
         const cartItems = await getUserCartWithProductInfo(userId);
-        res.status(200).json(cartItems);
+        res.json(cartItems);
     } catch (error) {
         console.error('Error fetching user cart:', error);
         res.status(500).send('Error fetching user cart');
