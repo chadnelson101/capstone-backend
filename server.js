@@ -7,7 +7,7 @@ import loginRouter from './routes/login.js'
 import socialsRouter from './routes/socials.js';
 import logInUser from './middlewear/auth.js'
 import cookieParser from 'cookie-parser';
-import {addToCart,getUserCart,updateCartItemQuantity,removeFromCart,getCartWithProductInfo} from './models/cart.js'
+import {addToCart,getUserCartWithProductInfo,updateCartItemQuantity,removeFromCart,getCartWithProductInfo} from './models/cart.js'
 config();
 
 const PORT = process.env.PORT;
@@ -35,7 +35,7 @@ app.get('/cart',async(req, res)=>{
 app.get('/cart/:userId', async (req, res) => {
     const userId = req.params.userId;
     try {
-        const cartItems = await getUserCart(userId);
+        const cartItems = await getUserCartWithProductInfo(userId);
         res.status(200).json(cartItems);
     } catch (error) {
         console.error('Error fetching user cart:', error);

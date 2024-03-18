@@ -45,10 +45,23 @@ const addToCart = async (userId, productId, quantity) => {
 
 
 // Get user's cart
-const getUserCart = async (userId) => {
-    const [cartItems] = await pool.query(`SELECT * FROM cart WHERE user_id = ?`, [userId]);
-    return cartItems;
+const getUserCartWithProductInfo = async (userId) => {
+    try {
+        // Query the database to retrieve user's cart items with product information
+        const query = `
+            SELECT c.*, p.* 
+            FROM cart c 
+            INNER JOIN products p ON c.product_id = p.prodid
+            WHERE c.user_id = ?
+        `;
+        const [cartItems] = await pool.query(query, [userId]);
+        return cartItems;
+    } catch (error) {
+        console.error('Error retrieving user cart with product information:', error);
+        throw error;
+    }
 };
+
 
 // Update cart item quantity
 const updateCartItemQuantity = async (cartId, quantity) => {
@@ -60,4 +73,4 @@ const removeFromCart = async (cartId) => {
     await pool.query(`DELETE FROM cart WHERE cart_id = ?`, [cartId]);
 };
 
-export {addToCart,getUserCart,updateCartItemQuantity,removeFromCart,getCartWithProductInfo}
+export {addToCart,getUserCartWithProductInfo,updateCartItemQuantity,removeFromCart,getCartWithProductInfo}
