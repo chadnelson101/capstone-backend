@@ -1,26 +1,29 @@
-import { checkuser } from '../models/users.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { check,getUserByEmail } from '../models/users.js';
 
 const loginUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        // Fetch hashed password from the database
-        const hashedPassword = await checkuser(email);
+        // Fetch hashed password and user ID from the database
+        const { id, hashedPassword } = await check(email);
 
         // Compare passwords using bcrypt.compare
         const passwordMatch = await bcrypt.compare(password, hashedPassword);
-        
+
+        let user = await getUserByEmail(email)
+
         if (passwordMatch) {
-            // Generate JWT token
-            const token = jwt.sign({ email: email }, process.env.SECRET_KEY, { expiresIn: '1d' });
+            // Generate JWT token with user ID
+            const token = jwt.sign({ id: id }, process.env.SECRET_KEY, { expiresIn: '1d' });
 
             // Set token as a cookie (httpOnly: true for security)
             res.cookie('jwt', token, { httpOnly: true });
             
             // Send success response
             return res.json({
+                user:user,
                 token: token,
                 msg: 'You have logged in successfully'
             });
@@ -39,4 +42,4 @@ const loginUser = async (req, res, next) => {
     }
 };
 
-export default loginUser
+export default loginUser;

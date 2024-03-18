@@ -35,4 +35,20 @@ const checkuser = async (email)=>{
     const [[{password}]] = await pool.query(`SELECT * FROM users WHERE email =?`,[email])
     return password
 }
-export{getUsers,getUser,createUser,updatedUser,deleteUser,checkuser}
+
+const check = async (email) => {
+    const [validate] = await pool.query(`SELECT userid, password FROM users WHERE email = ?`, [email]);
+    if (validate.length > 0) {
+        const { id, password } = validate[0];
+        return { id, hashedPassword: password };
+    } else {
+        throw new Error('User not found');
+    }
+};
+
+const getUserByEmail = async (email) => {
+    const [user] = await pool.query(`SELECT * FROM users WHERE email =?`, [email]);
+    return user
+}
+
+export{getUsers,getUser,createUser,updatedUser,deleteUser,checkuser,check,getUserByEmail}
