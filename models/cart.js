@@ -1,8 +1,19 @@
 import {pool} from '../config/config.js'
 
-const getCart = async ()=>{
-    const [cart] = await pool.query(`SELECT * FROM cart`)
-    return cart
+const getCartWithProductInfo = async () => {
+    try {
+        // Query the database to retrieve cart items with product information
+        const query = `
+            SELECT c.*, p.* 
+            FROM cart c 
+            INNER JOIN products p ON c.product_id = p.prodid
+        `;
+        const [cartItems] = await pool.query(query);
+        return cartItems;
+    } catch (error) {
+        console.error('Error retrieving cart with product information:', error);
+        throw error;
+    }
 };
 
 const addToCart = async (userId, productId, quantity) => {
@@ -49,4 +60,4 @@ const removeFromCart = async (cartId) => {
     await pool.query(`DELETE FROM cart WHERE cart_id = ?`, [cartId]);
 };
 
-export {addToCart,getUserCart,updateCartItemQuantity,removeFromCart,getCart}
+export {addToCart,getUserCart,updateCartItemQuantity,removeFromCart,getCartWithProductInfo}

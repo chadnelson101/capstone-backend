@@ -7,7 +7,7 @@ import loginRouter from './routes/login.js'
 import socialsRouter from './routes/socials.js';
 import logInUser from './middlewear/auth.js'
 import cookieParser from 'cookie-parser';
-import {addToCart,getUserCart,updateCartItemQuantity,removeFromCart,getCart} from './models/cart.js'
+import {addToCart,getUserCart,updateCartItemQuantity,removeFromCart,getCartWithProductInfo} from './models/cart.js'
 config();
 
 const PORT = process.env.PORT;
@@ -25,7 +25,7 @@ app.use('/post',socialsRouter);
 
 app.get('/cart',async(req, res)=>{
     try{
-        res.send(await getCart())
+        res.send(await getCartWithProductInfo())
     }catch (error){
         console.error('Error fetching users', error);
         res.status(500).send("Error fetching users");
@@ -48,10 +48,10 @@ app.post('/cart', async (req, res) => {
     const { userId, productId, quantity } = req.body;
     try {
         await addToCart(userId, productId, quantity);
-        res.status(201).json({ message: "Product added to cart successfully." });
+        res.status(201).json({ message: 'Product added to cart successfully.' });
     } catch (error) {
-        console.error("Error adding product to cart:", error);
-        res.status(500).json({ message: "Internal server error" });
+        console.error('Error adding product to cart:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 app.delete('/cart/:cartId', async (req, res) => {
