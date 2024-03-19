@@ -16,32 +16,35 @@ const getCartWithProductInfo = async () => {
     }
 };
 
-const addToCart = async (userId, productId, quantity) => {
-    const query = `
-        INSERT INTO cart (user_id, product_id, quantity)
-        VALUES (?, ?, ?)
-    `;
-    const values = [userId, productId, quantity];
+const addToCart = async (productId, quantity) => {
     try {
-        // Insert into cart
-        await pool.query(query, values);
+        // Retrieve the user ID from your authentication system (e.g., session, JWT token, etc.)
+        const userId = getUserId(); // Implement this function to retrieve the user ID
 
-        // Retrieve product information
-        const productQuery = `SELECT p.* FROM products p WHERE p.prodid = ?
-        `;
+        // Check if the product exists
+        const productQuery = `SELECT * FROM products WHERE prodid = ?`;
         const [productRows] = await pool.query(productQuery, [productId]);
 
-        if (productRows.length > 0) {
-            const productInfo = productRows[0];
-            return productInfo; // Return the product information
-        } else {
+        if (productRows.length === 0) {
             throw new Error('Product not found');
         }
+
+        // Insert into cart
+        const query = `
+            INSERT INTO cart (user_id, product_id, quantity)
+            VALUES (?, ?, ?)
+        `;
+        const values = [userId, productId, quantity];
+        await pool.query(query, values);
+
+        // Return the product information
+        return productRows[0];
     } catch (error) {
         console.error('Error adding to cart:', error);
         throw error; // Propagate the error
     }
 };
+
 
 
 // Get user's cart

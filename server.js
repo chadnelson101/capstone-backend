@@ -45,16 +45,16 @@ app.get('/cart/:userId',loginUser, async (req, res) => {
 });
 
 
-app.post('/cart', async (req, res) => {
-    const { userId, productId, quantity } = req.body;
-    try {
-        await addToCart(userId, productId, quantity);
-        res.status(201).json({ message: 'Product added to cart successfully.' });
-    } catch (error) {
-        console.error('Error adding product to cart:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
+    app.post('/cart', async (req, res) => {
+        const { userId, productId, quantity } = req.body;
+        try {
+            await addToCart(userId, productId, quantity);
+            res.status(201).json({ message: 'Product added to cart successfully.' });
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    });
 app.delete('/cart/:cartId', async (req, res) => {
     const cartId = req.params.cartId;
     try {
